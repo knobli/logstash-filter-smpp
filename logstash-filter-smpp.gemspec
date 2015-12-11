@@ -1,12 +1,12 @@
 Gem::Specification.new do |s|
-  s.name = 'logstash-filter-example'
-  s.version         = '2.0.3'
+  s.name = 'logstash-filter-smpp'
+  s.version         = '0.1.0'
   s.licenses = ['Apache License (2.0)']
-  s.summary = "This example filter replaces the contents of the message field with the specified value."
+  s.summary = "This filter decodes the smpp payload and set the values to the event."
   s.description = "This gem is a logstash plugin required to be installed on top of the Logstash core pipeline using $LS_HOME/bin/plugin install gemname. This gem is not a stand-alone program"
-  s.authors = ["Elastic"]
-  s.email = 'info@elastic.co'
-  s.homepage = "http://www.elastic.co/guide/en/logstash/current/index.html"
+  s.authors = ["knobli"]
+  s.email = 'info@knob.li'
+  s.homepage = ""
   s.require_paths = ["lib"]
 
   # Files
@@ -20,4 +20,9 @@ Gem::Specification.new do |s|
   # Gem dependencies
   s.add_runtime_dependency "logstash-core", ">= 2.0.0", "< 3.0.0"
   s.add_development_dependency 'logstash-devutils'
+
+  # Jar dependencies
+  s.requirements << "jar 'org.opensmpp:opensmpp-core', '3.0.0'"
+  s.requirements << "jar 'org.opensmpp:opensmpp-charset', '3.0.0'"
+  s.add_runtime_dependency 'jar-dependencies'
 end

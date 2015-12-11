@@ -1,6 +1,14 @@
 # encoding: utf-8
 require "logstash/filters/base"
 require "logstash/namespace"
+require 'java'
+require 'jar-dependencies'
+require_jar( 'org.opensmpp', 'opensmpp-core', '3.0.0' )
+require_jar( 'org.opensmpp', 'opensmpp-charset', '3.0.0' )
+
+$CLASSPATH << "target/classes"
+
+java_import "ch.datatrade.faast.common.decoder.PduToMapDecoder"
 
 # This filter decode the smpp payload in the specific field and set the fields to event
 class LogStash::Filters::Smpp < LogStash::Filters::Base
@@ -18,6 +26,8 @@ class LogStash::Filters::Smpp < LogStash::Filters::Base
   
   # Replace the message with this value.
   config :source, :validate => :string, :default => "payload", :required => true
+  config :smpp_target, :validate => :string, :default => "smpp"
+  config :mnp_target, :validate => :string, :default => "mnp"
   
 
   public
@@ -33,7 +43,18 @@ class LogStash::Filters::Smpp < LogStash::Filters::Base
 			# Replace the event message with our message as configured in the
 			# config file.
 			smpp_payload = event[@source]
-			event["test"] = "bla"
+      if smpp_payload[0,1] == "0"
+        parsed_values = PduToMapDecoder.decodeSmppHexToMap(smpp_payload)
+        target = @smpp_target
+      else
+        parsed_values = PduToMapDecoder.decodeMnpHexToMap(smpp_payload)
+        target = @mnp_target
+      end
+      event[target] = {} if event[target].nil?
+      parsed_values.each do |key, value|
+        event[target][key] = value
+      end
+
 		end
 		# filter_matched should go in the last line of our successful code
     end
