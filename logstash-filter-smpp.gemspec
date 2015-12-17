@@ -18,11 +18,7 @@ Gem::Specification.new do |s|
   s.metadata = { "logstash_plugin" => "true", "logstash_group" => "filter" }
 
   # Gem dependencies
-  s.add_runtime_dependency "logstash-core", ">= 2.0.0", "< 3.0.0"
+  s.add_runtime_dependency "logstash-core", '>= 1.4.0', '< 2.0.0'
   s.add_development_dependency 'logstash-devutils'
 
-  # Jar dependencies
-  s.requirements << "jar 'org.opensmpp:opensmpp-core', '3.0.0'"
-  s.requirements << "jar 'org.opensmpp:opensmpp-charset', '3.0.0'"
-  s.add_runtime_dependency 'jar-dependencies'
 end
