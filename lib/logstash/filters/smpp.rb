@@ -47,18 +47,20 @@ class LogStash::Filters::Smpp < LogStash::Filters::Base
           parsed_values = PduToMapDecoder.decodeMnpHexToMap(smpp_payload)
           target = @mnp_target
         end
-        event[target] = {} if event[target].nil?
-        parsed_values.each do |key, value|
-          #if key != "dlr"
-            event[target][key] = value
-          #else
-            #delivery_data_key = "dlr";
-            #data_map = split_delivery_data(value)
-            #event[target][delivery_data_key] = {}
-            #data_map.each do |del_key, del_value|
-            #  event[target][delivery_data_key][del_key] = del_value
+        if !parsed_values.nil?
+          event[target] = {} if event[target].nil?
+          parsed_values.each do |key, value|
+            #if key != "dlr"
+              event[target][key] = value
+            #else
+              #delivery_data_key = "dlr";
+              #data_map = split_delivery_data(value)
+              #event[target][delivery_data_key] = {}
+              #data_map.each do |del_key, del_value|
+              #  event[target][delivery_data_key][del_key] = del_value
+              #end
             #end
-          #end
+          end
         end
 
       end
