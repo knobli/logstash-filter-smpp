@@ -118,6 +118,33 @@ describe LogStash::Filters::Smpp do
     end
   end
 
+  describe "deliver sm in with empty body" do
+    let(:config) do <<-CONFIG
+      filter {
+        smpp {
+        }
+      }
+    CONFIG
+    end
+
+    sample("payload" => "0000004e00000005000000000000009c0001013438353035393533343334000500494e464f20534d530004000000000000000000001e001138334642463841393030303030303030000427000102") do
+      expect(subject).to include("smpp")
+      expect(subject['smpp']['record_type']).to eq('DeliverSM')
+      expect(subject['smpp']['src']).to eq('48505953434')
+      expect(subject['smpp']['src_ton']).to eq('1')
+      expect(subject['smpp']['src_npi']).to eq('1')
+      expect(subject['smpp']['dst']).to eq('INFO SMS')
+      expect(subject['smpp']['dst_ton']).to eq('5')
+      expect(subject['smpp']['dst_npi']).to eq('0')
+      expect(subject['smpp']['class']).to eq('4')
+      expect(subject['smpp']['priority']).to eq('0')
+      expect(subject['smpp']['registered_dlr']).to eq('0')
+      expect(subject['smpp']['data_length']).to eq('0')
+      expect(subject['smpp']['data_coding']).to eq('0')
+      expect(subject['smpp']['data_hex']).to eq('')
+    end
+  end
+
   describe "mnp lookup parsing" do
     let(:config) do <<-CONFIG
       filter {
