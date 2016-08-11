@@ -47,19 +47,10 @@ class LogStash::Filters::Smpp < LogStash::Filters::Base
           parsed_values = PduToMapDecoder.decodeMnpHexToMap(smpp_payload)
           target = @mnp_target
         end
-        if !parsed_values.nil?
+        unless parsed_values.nil?
           event[target] = {} if event[target].nil?
           parsed_values.each do |key, value|
-            #if key != "dlr"
               event[target][key] = value
-            #else
-              #delivery_data_key = "dlr";
-              #data_map = split_delivery_data(value)
-              #event[target][delivery_data_key] = {}
-              #data_map.each do |del_key, del_value|
-              #  event[target][delivery_data_key][del_key] = del_value
-              #end
-            #end
           end
         end
 
@@ -69,28 +60,4 @@ class LogStash::Filters::Smpp < LogStash::Filters::Base
     filter_matched(event)
   end # def filter
 
-  def split_delivery_data(data)
-    data_map = {}
-    data_parts = data.split(':')
-    key = ''
-    value = ''
-    counter = 1
-    data_parts.each {
-      |data_part|
-      if counter == 1
-        key = data_part
-        counter += 1
-      else
-        if 'text' == key
-          data_map[key] = data_part
-        else
-          parts = data_part.split(' ')
-          value = parts.first
-          data_map[key] = value
-          key = parts[1..-1].join('_')
-        end
-      end
-    }
-    data_map
-  end
 end # class LogStash::Filters::Example
